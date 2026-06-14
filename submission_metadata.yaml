@@ -1,4 +1,9 @@
+# Redrob Hackathon -- Submission Metadata
+# Mirrors portal metadata per submission_spec.md Section 10.3
+
+# Team identity
 team_name: "Zero-Cost Rankers"
+
 primary_contact:
   name: "Rohan Rogers"
   email: "your.email@example.com"
@@ -9,21 +14,53 @@ team_members:
     email: "your.email@example.com"
     role: "Systems Architect"
 
+# Code and reproducibility
 github_repo: "https://github.com/rohanrogers/india-runs-ranker"
 sandbox_link: "https://your-app-name.streamlit.app"
 
-ai_tools_declared:
+reproduce_command: "python3 rank.py --db candidates.db --out team_submission.csv"
+# Pre-computation step (runs outside 5-min window):
+#   python3 prep_data.py --input data/candidates.jsonl.gz --db candidates.db
+
+# Compute environment
+compute:
+  platform: "MacBook, Apple Silicon"
+  cpu_cores: 8
+  ram_gb: 16
+  python_version: "3.11"
+  os: "macOS"
+  uses_gpu_for_inference: false
+  has_network_during_ranking: false
+  pre_computation_required: true
+  pre_computation_time_minutes: 90
+
+# AI tools declaration
+ai_tools_used:
   - "Claude"
   - "Gemini"
 
-compute_environment_summary: "Local CPU execution, Python 3.10"
+ai_usage_summary: |
+  Used Claude and Gemini for architecture discussion, code review, and debugging
+  during development. No candidate data was sent to any external LLM. The ranking
+  pipeline runs entirely offline using a local sentence-transformer model with zero
+  API calls. All engineering decisions (scoring weights, honeypot detection patterns,
+  behavioral signal integration) were made through manual data inspection and
+  iterative testing.
 
+# Approach summary
 methodology_summary: |
-  We bypassed real-time API latency using an Offline ETL Compiler. We used a local sentence-transformer (bge-small-en) 
-  to encode descriptions and mapped exact behavioral signals into a SQLite database. During the 5-minute ranking window, 
-  we execute a C-level NumPy dot-product across the BLOBs, enforcing strictly deterministic monotonicity and injecting 
-  dynamic, hallucination-free reasoning strings.
+  Two-stage offline compiler architecture. Stage 1 (prep_data.py) runs outside the
+  5-minute window: parses 100K candidates, filters by YOE band, detects honeypots
+  via 4 signal patterns (date inversion, salary inversion, expert-zero-duration,
+  excessive expert count), extracts skill depth scores weighted by JD alignment,
+  computes behavioral multipliers from recruiter response rate and recency, and
+  batch-encodes profile text using local bge-small-en-v1.5 into 384-dim vectors
+  stored as SQLite BLOBs. Stage 2 (rank.py) runs within the 5-minute window:
+  loads pre-computed vectors, executes a single NumPy matrix dot-product against
+  the JD embedding, applies structural multipliers (company type, location,
+  behavioral signals), and outputs a deterministic top-100 CSV in under 2 seconds.
 
+# Declarations
 declarations:
   read_submission_spec: true
   code_is_original_work: true
