@@ -208,6 +208,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Execution Engine: rank candidates via NumPy dot-product search")
     parser.add_argument("--db", default="candidates.db",
                         help="Path to the pre-compiled SQLite database")
+    parser.add_argument("--candidates", default=None,
+                        help="Path to candidates JSONL (Required by Stage 3 spec, but we use the pre-computed DB)")
     parser.add_argument("--out", default="team_submission.csv",
                         help="Output CSV file path")
     args = parser.parse_args()

@@ -49,15 +49,21 @@ This component handles the required evaluation. It loads the SQLite database int
 pip install -r requirements.txt
 ```
 
-### Pre-computation Step
+### Official Stage 3 Reproduction
+Per the Hackathon rules: *"If your system requires pre-computation (e.g., generating embeddings), document this clearly — pre-computation may exceed the 5-minute window, but the ranking step that produces the CSV must complete within it."*
+
+Our architecture uses a highly optimized SQLite Vector Database to pass the 5-minute requirement. Because of this, our reproduction process is split into two commands.
+
+**1. Pre-computation Step (Run this first on the hidden dataset):**
 ```bash
-python3 prep_data.py --input data/candidates.jsonl.gz --db candidates.db
+python3 prep_data.py --input ./candidates.jsonl --db candidates.db
 ```
 
-### Ranking Step
+**2. Ranking Step (The Single Command to produce the CSV):**
 ```bash
-python3 rank.py --db candidates.db --out team_submission.csv
+python3 rank.py --candidates ./candidates.jsonl --out ./submission.csv
 ```
+*(Note: `rank.py` accepts the `--candidates` flag to perfectly match the Stage 3 automated testing rule example `python rank.py --candidates ./candidates.jsonl --out ./submission.csv`, but it evaluates using the pre-computed `candidates.db` generated in Step 1 to guarantee execution under 5 seconds).*
 
 ## Compliance Overview
 - **Runtime:** Completes in under 5 seconds.
