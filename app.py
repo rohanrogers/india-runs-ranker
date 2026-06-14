@@ -22,7 +22,11 @@ if not os.path.exists(DB_PATH):
 else:
     if st.button("Execute Ranking Pipeline"):
         with st.spinner("Executing NumPy vector math..."):
-            subprocess.run(["python3", "rank.py", "--db", DB_PATH, "--out", "sandbox_output.csv"], check=True)
+            import sys
+            result = subprocess.run([sys.executable, "rank.py", "--db", DB_PATH, "--out", "sandbox_output.csv"], capture_output=True, text=True)
+            if result.returncode != 0:
+                st.error(f"Execution failed! Error details:\\n{result.stderr}")
+                st.stop()
 
         st.success("Ranking complete! Output generated.")
 
