@@ -1,0 +1,4 @@
+sentence-transformers==2.7.0
+numpy==1.26.4
+pandas==2.2.2
+streamlit==1.35.0

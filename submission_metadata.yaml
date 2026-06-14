@@ -1,0 +1,32 @@
+team_name: "Zero-Cost Rankers"
+primary_contact:
+  name: "Rohan Rogers"
+  email: "your.email@example.com"
+  phone: "+91-XXXXXXXXXX"
+
+team_members:
+  - name: "Rohan Rogers"
+    email: "your.email@example.com"
+    role: "Systems Architect"
+
+github_repo: "https://github.com/rohanrogers/india-runs-ranker"
+sandbox_link: "https://your-app-name.streamlit.app"
+
+ai_tools_declared:
+  - "Claude"
+  - "Gemini"
+
+compute_environment_summary: "Local CPU execution, Python 3.10"
+
+methodology_summary: |
+  We bypassed real-time API latency using an Offline ETL Compiler. We used a local sentence-transformer (bge-small-en) 
+  to encode descriptions and mapped exact behavioral signals into a SQLite database. During the 5-minute ranking window, 
+  we execute a C-level NumPy dot-product across the BLOBs, enforcing strictly deterministic monotonicity and injecting 
+  dynamic, hallucination-free reasoning strings.
+
+declarations:
+  read_submission_spec: true
+  code_is_original_work: true
+  no_collusion: true
+  honeypot_check_done: true
+  reproduction_tested: true
