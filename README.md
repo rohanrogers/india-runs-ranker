@@ -36,22 +36,28 @@ This component handles the required evaluation. It loads the SQLite database int
 ## Setup and Reproduction
 
 ### Environment Requirements
-Python 3.11+
-16GB RAM
-CPU environment
+- Python 3.11+
+- 16GB RAM
+- CPU environment
 
 ### Installation
+```bash
 pip install -r requirements.txt
+```
 
 ### Pre-computation Step
+```bash
 python3 prep_data.py --input data/candidates.jsonl.gz --db candidates.db
+```
 
 ### Ranking Step
+```bash
 python3 rank.py --db candidates.db --out team_submission.csv
+```
 
 ## Compliance Overview
-Runtime: Completes in under 5 seconds.
-Memory: Peak usage is approximately 500MB.
-Compute: CPU execution only.
-Network: No external API calls during execution.
-Storage: Intermediate state uses 125MB.
+- **Runtime:** Completes in under 5 seconds.
+- **Memory:** Peak usage is approximately 500MB.
+- **Compute:** CPU execution only.
+- **Network:** No external API calls during execution.
+- **Storage:** Intermediate state uses 125MB.
