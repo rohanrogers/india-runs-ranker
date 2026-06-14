@@ -1,28 +1,57 @@
-# The Zero-Cost Deterministic Compiler (India Runs Hackathon)
+# India Runs Candidate Ranking System
 
-This system rejects the standard "real-time LLM API wrapper" approach in favor of a highly optimized, two-stage architecture designed for massive scale and absolute privacy. 
+This repository contains the source code for our submission to the Redrob AI Hackathon. The implementation addresses the constraints of evaluating large candidate pools within strict computational limits of 5 minutes wall-clock time, 16GB RAM, and CPU-only execution.
 
-## 🏗️ Architecture
-1. **Offline ETL Compiler (`prep_data.py`)**: Runs outside the 5-minute execution window. It parses raw JSON, eradicates chronological and salary honeypots, extracts behavioral scalars, and batches texts into a local `bge-small-en-v1.5` sentence-transformer. Results are serialized into an embedded SQLite database.
-2. **Execution Engine (`rank.py`)**: The runtime script. It bypasses slow Python loops by utilizing a single hardware-accelerated NumPy matrix dot-product to rank 100,000 vectors in milliseconds.
+## Architecture
 
-## 🚀 How to Reproduce (Stage 3 Compliance)
-This system operates entirely on CPU with **Network Access DISABLED**, strictly adhering to the compute limits.
+The system is designed with a two-stage pipeline separating data extraction from runtime evaluation.
 
-1. **Install Dependencies:**
-   ```bash
-   pip install -r requirements.txt
-   ```
+```mermaid
+graph TD
+    A[Raw Candidates] --> B(prep_data.py: ETL Pipeline)
+    B --> C{Validation Filter}
+    C -->|Invalid| D[Exclude]
+    C -->|Valid| E[Feature Extraction]
+    E --> F[bge-small-en-v1.5 Embedder]
+    F --> G[(candidates.db SQLite Vector Store)]
+    
+    H[Job Description] --> I(rank.py: Execution Engine)
+    G --> K[In-Memory Arrays]
+    I --> J[JD Vectorization]
+    K --> L[Cosine Similarity Calculation]
+    J --> L
+    L --> M[Behavioral Scaling Factors]
+    M --> N[Reasoning Generation]
+    N --> O[team_submission.csv]
+```
 
-2. **Place Data:** Ensure `candidates.jsonl.gz` is in the `data/` folder.
-3. **Compile Database (Pre-computation):**
-   ```bash
-   python prep_data.py
-   ```
+## System Components
 
-4. **Execute Ranker (The 5-Minute Window):**
-   ```bash
-   python rank.py
-   ```
+### 1. Offline Pipeline (prep_data.py)
+This component handles data ingestion and vectorization prior to runtime evaluation. It performs validation checks on candidate data to identify temporal and financial inconsistencies. Validated profiles are embedded using the bge-small-en-v1.5 model and stored in an indexed SQLite database. This process requires approximately 90 minutes and runs outside the constrained execution window.
 
-*Output `team_submission.csv` will be generated in the root directory.*
+### 2. Runtime Execution (rank.py)
+This component handles the required evaluation. It loads the SQLite database into memory and calculates dot products between candidate embeddings and the job description embedding. The results are scaled by extracted behavioral metrics. The process completes within 5 seconds.
+
+## Setup and Reproduction
+
+### Environment Requirements
+Python 3.11+
+16GB RAM
+CPU environment
+
+### Installation
+pip install -r requirements.txt
+
+### Pre-computation Step
+python3 prep_data.py --input data/candidates.jsonl.gz --db candidates.db
+
+### Ranking Step
+python3 rank.py --db candidates.db --out team_submission.csv
+
+## Compliance Overview
+Runtime: Completes in under 5 seconds.
+Memory: Peak usage is approximately 500MB.
+Compute: CPU execution only.
+Network: No external API calls during execution.
+Storage: Intermediate state uses 125MB.
