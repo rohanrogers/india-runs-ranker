@@ -16,7 +16,7 @@ team_members:
 
 # Code and reproducibility
 github_repo: "https://github.com/rohanrogers/india-runs-ranker"
-sandbox_link: "https://your-app-name.streamlit.app"
+sandbox_link: "https://india-runs-ranker.streamlit.app/"
 
 reproduce_command: "python3 rank.py --db candidates.db --out team_submission.csv"
 # Pre-computation step (runs outside 5-min window):
