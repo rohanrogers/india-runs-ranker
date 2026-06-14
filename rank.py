@@ -198,7 +198,7 @@ def run_ranker(db_path="candidates.db", output_csv="team_submission.csv"):
         for rank, candidate in enumerate(top_100, 1):
             c_id = candidate['candidate_id']
             score = candidate['score']
-            reasoning = generate_reasoning(rank, candidate['r_data'], c_id)
+            reasoning = generate_reasoning(rank, candidate['r_data'], c_id).replace(',', ';')
             writer.writerow([c_id, rank, score, reasoning])
 
     print("Execution completed safely.")
