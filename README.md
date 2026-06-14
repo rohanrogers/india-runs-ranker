@@ -2,6 +2,10 @@
 
 This repository contains the source code for our submission to the Redrob AI Hackathon. The implementation addresses the constraints of evaluating large candidate pools within strict computational limits of 5 minutes wall-clock time, 16GB RAM, and CPU-only execution.
 
+## Sandbox Demo
+A live, interactive demonstration of this ranking pipeline running under restricted compute limits is available here:
+[Streamlit Sandbox Demo](https://india-runs-ranker.streamlit.app/)
+
 ## Architecture
 
 The system is designed with a two-stage pipeline separating data extraction from runtime evaluation.
