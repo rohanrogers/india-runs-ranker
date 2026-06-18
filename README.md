@@ -1,6 +1,6 @@
 # India Runs Candidate Ranking System
 
-This repository contains the source code for our submission to the Redrob AI Hackathon. The implementation addresses the constraints of evaluating large candidate pools within strict computational limits of 5 minutes wall-clock time, 16GB RAM, and CPU-only execution.
+The job description explicitly warns against keyword stuffing. We address this by combining semantic career evidence, skill duration depth, product and company fit, behavior availability, and honeypot rejection. This repository contains the source code for our submission. The implementation evaluates large candidate pools within the computational limits of 5 minutes wall clock time, 16GB RAM, and CPU only execution.
 
 ## Sandbox Demo
 A live, interactive demonstration of this ranking pipeline running under restricted compute limits is available here:
