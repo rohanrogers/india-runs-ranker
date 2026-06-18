@@ -2,6 +2,10 @@
 
 The job description explicitly warns against keyword stuffing. We address this by combining semantic career evidence, skill duration depth, product and company fit, behavior availability, and honeypot rejection. This repository contains the source code for our submission. The implementation evaluates large candidate pools within the computational limits of 5 minutes wall clock time, 16GB RAM, and CPU only execution.
 
+## What to Submit
+- Canonical output: `team_submission.csv`
+- Portal upload: `team_submission.xlsx` (if the portal only accepts Excel. The XLSX is only a spreadsheet copy of the CSV with the same columns and rows).
+
 ## Sandbox Demo
 A live, interactive demonstration of this ranking pipeline running under restricted compute limits is available here:
 [Streamlit Sandbox Demo](https://india-runs-ranker.streamlit.app/)
@@ -55,15 +59,19 @@ Per the Hackathon rules: *"If your system requires pre-computation (e.g., genera
 Our architecture uses a highly optimized SQLite Vector Database to pass the 5-minute requirement. Because of this, our reproduction process is split into two commands.
 
 **1. Pre-computation Step (Run this first on the hidden dataset):**
+Stage 1 builds `candidates.db` and may exceed 5 minutes.
 ```bash
-python3 prep_data.py --input ./candidates.jsonl --db candidates.db
+python3 prep_data.py --input ./candidates.jsonl.gz --db candidates.db
 ```
 
 **2. Ranking Step (The Single Command to produce the CSV):**
+Stage 2 uses the precomputed DB and produces the top-100 CSV within the 5-minute CPU budget.
+The ranking step does not call external APIs. It uses a local sentence-transformer model. The model weights must be available in the environment/cache before offline ranking.
+
 ```bash
-python3 rank.py --candidates ./candidates.jsonl --out ./submission.csv
+python3 rank.py --db candidates.db --out team_submission.csv
 ```
-*(Note: `rank.py` accepts the `--candidates` flag to perfectly match the Stage 3 automated testing rule example `python rank.py --candidates ./candidates.jsonl --out ./submission.csv`, but it evaluates using the pre-computed `candidates.db` generated in Step 1 to guarantee execution under 5 seconds).*
+*(Note: `rank.py` accepts the `--candidates` flag for compatibility if the automated tester uses `python rank.py --candidates ./candidates.jsonl --out ./submission.csv`, but the actual ranking reads from the `candidates.db` generated in Step 1 to guarantee execution under 5 seconds).*
 
 ## Compliance Overview
 - **Runtime:** Completes in under 5 seconds.
